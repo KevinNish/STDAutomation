@@ -47,6 +47,7 @@ $commands=@(
 'create partition primary NOERR'
 'format quick fs=ntfs label="Company Files"'
 'assign mount=C:\Company\'
+'assign letter=V'
 )
 $commands | diskpart
 
@@ -73,7 +74,7 @@ Register-ScheduledTask $TaskName -InputObject $ScheduledTask -User "NT AUTHORITY
 
 vssadmin.exe Resize ShadowStorage /for=C: /On=C: /MaxSize=25%
 
-$diskname = "C:\Company\"
+$diskname = "V:\"
 $VolumeWmi = gwmi Win32_Volume -Namespace root/cimv2 | ?{ $_.Name -eq $diskname }
 $DeviceID = $VolumeWmi.DeviceID.ToUpper().Replace("\\?\VOLUME", "").Replace("\","")
 $TaskName = "ShadowCopyVolume" + $DeviceID
@@ -90,7 +91,7 @@ $ScheduledSettings = New-ScheduledTaskSettingsSet -Compatibility V1 -DontStopOnI
 $ScheduledTask = New-ScheduledTask -Action $ScheduledAction -Trigger $ScheduledTrigger -Settings $ScheduledSettings
 Register-ScheduledTask $TaskName -InputObject $ScheduledTask -User "NT AUTHORITY\SYSTEM"
 
-vssadmin.exe Resize ShadowStorage /for=C:\Company /On=C:\Company /MaxSize=25%
+vssadmin.exe Resize ShadowStorage /for=V: /On=V: /MaxSize=25%
 
 
 #Variables :)
